@@ -1,0 +1,36 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+        python: 3.9
+    commands:
+        - echo "installing something"
+  pre_build:
+    commands:
+      - echo "Before running tests"
+      - pip install -r requirements.txt
+      - pip install coverage
+      - pip install pytest-django
+      - python manage.py collectstatic --noinput
+      - echo "Running migrate"
+      - python manage.py migrate
+  build:
+    commands:
+      - echo "Running all unit tests"
+      - coverage run -m pytest --junitxml=test-results/junit.xml
+      - coverage report
+      - coverage html
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+reports:
+  pytest_reports:
+    files:
+      - 'junit.xml'
+    base-directory: 'test-results'
+    file-format: 'JUNITXML'
+
+# cache:
+#   paths:
+#     - '/root/.cache/pip/**/*'

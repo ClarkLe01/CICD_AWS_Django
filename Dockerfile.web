@@ -1,0 +1,27 @@
+# Use an official Python runtime as the base image
+FROM python:3.9.13
+
+# add node
+ENV NODE_VERSION=14.21.3
+RUN apt install -y curl
+RUN apt update
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
+
+# Install the project dependencies
+RUN pip install -r requirements.txt
+
+# Copy the Django project code to the container
+COPY . .
+
+#set permission for our bash file
+
+RUN sed -i 's/\r$//g' /app/runserver.sh
+RUN chmod +x /app/runserver.sh
+
+RUN sed -i 's/\r$//g' /app/runserver-prod.sh
+RUN chmod +x /app/runserver-prod.sh

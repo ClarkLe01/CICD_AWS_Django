@@ -972,4 +972,5 @@ cython_debug/
 
 ## S/MIME message
 *.smime
-
+htmlcov/
+test-results/

@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: aws_web
+    image: aws_web
+    command: ./runserver.sh
+    ports:
+      - 8001:8001
+      - 5678:5678
+    volumes:
+      - .:/app
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - ENVIRONMENT=staging
+
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: aws_webserver
+    image: aws_webserver
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./conf/nginx/:/etc/nginx/conf.d/:ro
+      - ./static/:/static/
+      - ./media/:/media/
+      - ./conf/certs/:/etc/letsencrypt/
+      
